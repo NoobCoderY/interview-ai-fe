@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from "axios"
 import { ServerUrl } from '../App'
 import { FaArrowLeft } from 'react-icons/fa'
+import toast from 'react-hot-toast'
 function InterviewHistory() {
     const [interviews, setInterviews] = useState([])
     const navigate = useNavigate()
@@ -16,6 +17,8 @@ function InterviewHistory() {
 
             } catch (error) {
                 console.log(error)
+                const msg = error?.response?.data?.message || 'Failed to load interview history.'
+                toast.error(msg)
             }
 
         }

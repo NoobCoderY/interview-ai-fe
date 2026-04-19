@@ -12,6 +12,7 @@ import axios from "axios"
 import { ServerUrl } from '../App';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import toast from 'react-hot-toast';
 function Step1SetUp({ onStart }) {
     const {userData}= useSelector((state)=>state.user)
     const dispatch = useDispatch()
@@ -45,12 +46,14 @@ function Step1SetUp({ onStart }) {
             setSkills(result.data.skills || []);
             setResumeText(result.data.resumeText || "");
             setAnalysisDone(true);
-
+            toast.success('Resume analyzed successfully!');
             setAnalyzing(false);
 
         } catch (error) {
             console.log(error)
             setAnalyzing(false);
+            const msg = error?.response?.data?.message || 'Failed to analyze resume. Please try again.'
+            toast.error(msg)
         }
     }
 
@@ -63,11 +66,14 @@ function Step1SetUp({ onStart }) {
             dispatch(setUserData({...userData , credits:result.data.creditsLeft}))
            }
            setLoading(false)
+           toast.success('Interview started! Good luck.')
            onStart(result.data)
 
         } catch (error) {
             console.log(error)
             setLoading(false)
+            const msg = error?.response?.data?.message || 'Failed to start interview. Please try again.'
+            toast.error(msg)
         }
     }
     return (

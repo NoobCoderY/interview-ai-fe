@@ -6,6 +6,7 @@ import axios from 'axios';
 import { ServerUrl } from '../App';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import toast from 'react-hot-toast';
 function Pricing() {
   const navigate = useNavigate()
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -84,8 +85,7 @@ function Pricing() {
       handler:async function (response) {
         const verifypay = await axios.post(ServerUrl + "/api/payment/verify" ,response , {withCredentials:true})
         dispatch(setUserData(verifypay.data.user))
-
-          alert("Payment Successful 🎉 Credits Added!");
+          toast.success('Payment successful! Credits added to your account.')
           navigate("/")
 
       },
@@ -102,6 +102,8 @@ function Pricing() {
     } catch (error) {
      console.log(error)
      setLoadingPlan(null);
+     const msg = error?.response?.data?.message || 'Payment failed. Please try again.'
+     toast.error(msg)
     }
   }
 

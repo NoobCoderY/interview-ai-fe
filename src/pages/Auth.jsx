@@ -9,6 +9,7 @@ import axios from 'axios';
 import { ServerUrl } from '../App';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import toast from 'react-hot-toast';
 function Auth({isModel = false}) {
     const dispatch = useDispatch()
 
@@ -20,13 +21,12 @@ function Auth({isModel = false}) {
             let email = User.email
             const result = await axios.post(ServerUrl + "/api/auth/google" , {name , email} , {withCredentials:true})
             dispatch(setUserData(result.data))
-            
-
-
-            
+            toast.success('Signed in successfully!')
         } catch (error) {
             console.log(error)
-              dispatch(setUserData(null))
+            dispatch(setUserData(null))
+            const msg = error?.response?.data?.message || error?.message || 'Sign in failed. Please try again.'
+            toast.error(msg)
         }
     }
   return (

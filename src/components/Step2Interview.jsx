@@ -10,6 +10,7 @@ import { useEffect } from 'react'
 import axios from "axios"
 import { ServerUrl } from '../App'
 import { BsArrowRight } from 'react-icons/bs'
+import toast from 'react-hot-toast'
 
 function Step2Interview({ interviewData, onFinish }) {
   const { interviewId, questions, userName } = interviewData;
@@ -263,8 +264,10 @@ function Step2Interview({ interviewData, onFinish }) {
       speakText(result.data.feedback)
       setIsSubmitting(false)
     } catch (error) {
-console.log(error)
-setIsSubmitting(false)
+      console.log(error)
+      setIsSubmitting(false)
+      const msg = error?.response?.data?.message || 'Failed to submit answer.'
+      toast.error(msg)
     }
   }
 
@@ -294,9 +297,12 @@ setIsSubmitting(false)
       const result = await axios.post(ServerUrl+ "/api/interview/finish" , { interviewId} , {withCredentials:true})
 
       console.log(result.data)
+      toast.success('Interview complete! Here is your report.')
       onFinish(result.data)
     } catch (error) {
       console.log(error)
+      const msg = error?.response?.data?.message || 'Failed to finish interview.'
+      toast.error(msg)
     }
   }
 
